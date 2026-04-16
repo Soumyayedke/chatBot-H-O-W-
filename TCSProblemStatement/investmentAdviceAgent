@@ -1,1 +1,33 @@
+import streamlit as st
+import pandas as pd
 
+st.title("FinPilot AI 💰")
+
+uploaded_file = st.file_uploader("Upload bank statement CSV")
+
+if uploaded_file:
+    df = pd.read_csv(uploaded_file)
+
+    total_income = df[df["type"]=="credit"]["amount"].sum()
+    total_expense = df[df["type"]=="debit"]["amount"].sum()
+
+    savings = total_income - total_expense
+    savings_rate = savings / total_income
+
+    st.write("Savings Rate:", round(savings_rate*100,2), "%")
+
+    if savings_rate > 0.3:
+        risk = "high"
+    elif savings_rate > 0.15:
+        risk = "medium"
+    else:
+        risk = "low"
+
+    st.write("Risk Profile:", risk)
+
+    if risk == "high":
+        st.write("Suggested Portfolio: 70% Stocks, 20% Bonds, 10% Cash")
+    elif risk == "medium":
+        st.write("Suggested Portfolio: 50% Stocks, 30% Bonds, 20% Cash")
+    else:
+        st.write("Suggested Portfolio: 30% Stocks, 40% Bonds, 30% Cash")
